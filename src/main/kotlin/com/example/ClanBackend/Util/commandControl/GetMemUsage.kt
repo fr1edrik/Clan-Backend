@@ -1,13 +1,12 @@
-package com.example.ClanBackend.Util
+package com.example.ClanBackend.Util.commandControl
 
 import com.example.ClanBackend.interfaces.ICommand
 import com.example.ClanBackend.model.metrics.Memory
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
-object GetMemUsage : ICommand {
+object GetMemUsage : ICommand<Memory> {
     override fun execute(): Memory {
-        val homeDirectory = System.getProperty("user.home")
         var result: String = ""
 
         var reader: BufferedReader? = null
@@ -22,15 +21,10 @@ object GetMemUsage : ICommand {
             reader = BufferedReader(InputStreamReader(
                     process.inputStream))
 
-            memList = reader.readLines().map { value ->
-
+            memList = reader.readLines().map { value: String ->
                 val splited = value.split(' ')
-
-
                     mapOf("total" to splited[0],"used" to splited[1])
             }
-
-
         } catch (e: Exception) {
             e.stackTrace
         } finally {
