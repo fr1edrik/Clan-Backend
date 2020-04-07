@@ -1,5 +1,6 @@
 package com.example.ClanBackend.controller
 
+import com.example.ClanBackend.service.mongoDb.MongoHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -7,7 +8,8 @@ import org.springframework.web.bind.annotation.RestController
 class ServersController {
     @GetMapping("/servers", produces = ["application/json"])
     fun getServers(): String {
-        return ""
+        MongoHandler.getDataBase()
+        return "hello"
     }
 
     @GetMapping("/servers/ts3", produces = ["application/json"])
