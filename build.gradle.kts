@@ -24,6 +24,12 @@ dependencies {
 		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
 	}
 	implementation("org.mongodb:mongo-java-driver")
+	implementation("org.apache.spark:spark-core_2.11:2.1.0"){
+		exclude("org.slf4j", "slf4j-log4j12")
+	}
+
+//	implementation("org.apache.spark:spark-core_2.10:0.9.1")
+
 }
 
 tasks.withType<Test> {
