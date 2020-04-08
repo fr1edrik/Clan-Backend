@@ -13,7 +13,8 @@ class GameServersController {
 
     @GetMapping("/servers/gameServers/mb-warband", produces = ["application/json"])
     fun getMbWarband(): Any {
-        return SparkHandler.readLog()
+        SparkHandler.readLog("src/main/resources/log.txt")
+        return "OK"
     }
 
     @GetMapping("/servers/gameServers/mb-bannerlord", produces = ["application/json"])
