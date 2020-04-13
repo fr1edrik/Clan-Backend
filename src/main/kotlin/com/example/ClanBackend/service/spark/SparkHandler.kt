@@ -10,7 +10,7 @@ object SparkHandler {
     private val conf: SparkConf = SparkConf().setAppName("Spark App").setMaster("local[*]")
     private val sparkContext: SparkContext = SparkContext(conf)
 
-    fun readLog(filePath: String): List<ChatEntry> {
+    fun parseLog(filePath: String): List<ChatEntry> {
         try {
             val lines: RDD<String> = sparkContext.textFile(filePath, 1)
 

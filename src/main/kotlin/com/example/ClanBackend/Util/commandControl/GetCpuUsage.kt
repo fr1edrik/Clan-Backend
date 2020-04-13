@@ -11,14 +11,14 @@ object GetCpuUsage : ICommand<String> {
         var reader: BufferedReader? = null
 
         try {
-            val command = String.format("/home/kilian/IdeaProjects/Clan-Backend/src/main/resources/Scripts/getCPU.sh")
+            val command = String.format("src/main/resources/Scripts/getCPU.sh")
             val process = Runtime.getRuntime().exec(command)
 
             reader = BufferedReader(InputStreamReader(
                     process.inputStream))
             result = reader.readLines().last()
         } catch (e: Exception) {
-            e.stackTrace
+            throw e
         }finally {
             reader?.close()
         }

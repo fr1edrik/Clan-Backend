@@ -15,7 +15,7 @@ object GetMemUsage : ICommand<Memory> {
 
         try {
 
-            val command = String.format("/home/kilian/IdeaProjects/Clan-Backend/src/main/resources/Scripts/getMem.sh")
+            val command = String.format("src/main/resources/Scripts/getMem.sh")
             val process = Runtime.getRuntime().exec(command)
 
             reader = BufferedReader(InputStreamReader(
@@ -26,7 +26,7 @@ object GetMemUsage : ICommand<Memory> {
                     mapOf("total" to splited[0],"used" to splited[1])
             }
         } catch (e: Exception) {
-            e.stackTrace
+            throw e
         } finally {
             reader?.close()
         }
