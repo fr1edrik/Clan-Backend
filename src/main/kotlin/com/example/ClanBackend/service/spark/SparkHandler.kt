@@ -14,17 +14,17 @@ object SparkHandler {
     private val sparkContext: SparkContext = SparkContext(conf)
 
     private val findTimeStamp: Regex = "([012][0-9]:[0-5][0-9]:[0-5][0-9])".toRegex()
-    private val findJoinedPlayer: Regex = "([012][0-9]:[0-5][0-9]:[0-5][0-9]) - .+ has joined|left the game with ID: [0-9]+".toRegex()
+    private val findJoinedPlayer: Regex = "([012][0-9]:[0-5][0-9]:[0-5][0-9]) - .+ has (joined)|(left) the game with ID: [0-9]+".toRegex()
     private val findChat: Regex = ".*\\[.*\\].*".toRegex()
     private val findID: Regex = "(?<=ID: )[0-9]+".toRegex()
-    private val findEntrance: Regex = "[(joined)(left)]".toRegex()
+    private val findEntrance: Regex = "(joined)|(left)".toRegex()
     private val findPlayerName: Regex = "(?<=- )(.*?)(?= )".toRegex()
 
     fun parseLog(filePath: String): List<Any> {
         try {
             val list: JavaRDD<String> = sparkContext.textFile(filePath, 1).toJavaRDD()
 
-            return getChats(list)
+            return getServerEntrance(list)
         } catch (e: Exception) {
             throw e
         }
@@ -33,8 +33,8 @@ object SparkHandler {
     fun getChats(rdd: JavaRDD<String>): List<ChatEntry> {
         return rdd.filter { findChat.containsMatchIn(it) }.map {
             val time = it.slice(1..8)
-            val name = findChat.find(it)?.value
-            val text = it.split(".*?\\][ :]".toRegex()).last()
+            val name = "(?<= \\[)(.*?)(?=\\][: ])".toRegex().find(it)?.value
+            val text = "(?<=\\][(: ) ]).*(?= )".toRegex().find(it)?.value ?: ""
 
             Triple(time, name ?: "", text)
         }.collect().map { (a, b, c) -> ChatEntry(a, b, c) }
@@ -43,9 +43,13 @@ object SparkHandler {
     // Player joins or leaves the server
     fun getServerEntrance(rdd: JavaRDD<String>): List<JoinEntry> {
         return rdd.filter { findJoinedPlayer.containsMatchIn(it) }.map {
-             mapOf<String, String>("timetamp" to findTimeStamp.find(it)?.value!!, "playerName" to findPlayerName.find(it)?.value!!, "playerID" to findID.find(it)?.value!!,"entranceStatus" to findEntrance.find(it)?.value!!)
+            mapOf<String, String>(
+                    "timetamp" to findTimeStamp.find(it)?.value!!,
+                    "playerName" to findPlayerName.find(it)?.value!!,
+                    "playerID" to findID.find(it)?.value!!,
+                    "entranceStatus" to findEntrance.find(it)?.value!!)
         }.collect().map {
-            JoinEntry(it["timetamp"]?:"", it["playerID"]?:"", it["playerName"]?:"", it["entranceStatus"]?:"")
+            JoinEntry(it["timetamp"] ?: "", it["playerID"] ?: "", it["playerName"] ?: "", it["entranceStatus"] ?: "")
         }
     }
 }
