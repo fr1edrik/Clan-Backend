@@ -24,10 +24,10 @@ class GameServersController {
     @GetMapping("/servers/gameServers/mb-warband", produces = ["application/json"])
     fun getMbWarband(): Any {
         val log = SparkHandler.parseLog("src/main/resources/log.txt")
-        MongoHandler.insertInto("myCollections", log)
-        return "OK"
+        // MongoHandler.insertInto("myCollections", log)
+        return log
     }
-
+    @CrossOrigin(origins = ["http://localhost:3000"])
     @GetMapping("/servers/gameServers/mb-warband/fileManager", produces = ["application/json"])
     fun getMbWarbandMapFiles(): Any {
         val pathLinux = "/mnt/e/_Projects/_Clan-Projects/Mount\\&Blade\\ Warband\\ Dedicated/Modules/Native/SceneObj/"
