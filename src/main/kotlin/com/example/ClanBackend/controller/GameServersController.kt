@@ -38,21 +38,25 @@ class GameServersController {
         val test = "/mnt/e/"
         val pathWin = "E:\\_Projects\\_Clan-Projects\\Mount&Blade Warband Napoleonic Wars Dedicated\\Modules\\Napoleonic Wars\\SceneObj"
 
-//        return FileSystemUtil.getFilesForFolder(pathWin)
-        FileSystemUtil.saveFile()
-
-        return "OK"
+        return FileSystemUtil.getFilesForFolder(pathWin)
     }
 
     @CrossOrigin
     @PostMapping("/servers/gameServers/mb-warband/mapFiles", produces = ["application/json"])
-    fun funSaveWarbandMapFiles(@RequestParam("mapFiles") mapFiles: MultipartFile): String {
-        if (mapFiles.isEmpty) return "File is Empty"
+    fun funSaveWarbandMapFiles(@RequestParam("mapFiles") mapFiles: List<MultipartFile>): String {
+
+        mapFiles.forEach { writeFile(it) }
+
+        return ""
+    }
+
+    fun writeFile(file: MultipartFile): String {
+        if (file.isEmpty) return "File is Empty"
 
         var stream: BufferedOutputStream? = null
         return try {
-            val bytes: ByteArray = mapFiles.bytes
-            val file:File=File("E:\\_Projects\\_Clan-Projects\\Mount&Blade Warband Napoleonic Wars Dedicated\\Modules\\Napoleonic Wars\\SceneObj\\${mapFiles.originalFilename}" )
+            val bytes: ByteArray = file.bytes
+            val file: File = File("E:\\_Projects\\_Clan-Projects\\Mount&Blade Warband Napoleonic Wars Dedicated\\Modules\\Napoleonic Wars\\SceneObj\\${file.originalFilename}")
             stream = BufferedOutputStream(FileOutputStream(file))
             stream.write(bytes)
             "You successfully uploaded!"
@@ -62,6 +66,7 @@ class GameServersController {
         } finally {
             stream?.close()
         }
+
     }
 
     @GetMapping("/servers/gameServers/mb-bannerlord", produces = ["application/json"])
