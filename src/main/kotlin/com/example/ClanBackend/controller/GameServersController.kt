@@ -1,12 +1,15 @@
 package com.example.clanBackend.controller
 
 import com.example.ClanBackend.Util.FileSystem.FileSystemUtil
+import com.example.ClanBackend.model.currentSession.JoinEntry
 import com.example.ClanBackend.service.mongoDb.MongoHandler
 import com.example.ClanBackend.service.spark.SparkHandler
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
+import java.io.BufferedOutputStream
 import java.io.File
+import java.io.FileOutputStream
+import java.lang.Exception
 
 @RestController
 class GameServersController {
@@ -23,18 +26,42 @@ class GameServersController {
 
     @GetMapping("/servers/gameServers/mb-warband", produces = ["application/json"])
     fun getMbWarband(): Any {
-        val log = SparkHandler.parseLog("src/main/resources/log.txt")
-        // MongoHandler.insertInto("myCollections", log)
+        val log = SparkHandler.parseLog("src/main/resources/server_log_04_04_20.txt")
+        MongoHandler.insertInto<JoinEntry>("testCollections", log as List<JoinEntry>)
         return log
     }
+
     @CrossOrigin(origins = ["http://localhost:3000"])
-    @GetMapping("/servers/gameServers/mb-warband/fileManager", produces = ["application/json"])
+    @GetMapping("/servers/gameServers/mb-warband/mapFiles", produces = ["application/json"])
     fun getMbWarbandMapFiles(): Any {
         val pathLinux = "/mnt/e/_Projects/_Clan-Projects/Mount\\&Blade\\ Warband\\ Dedicated/Modules/Native/SceneObj/"
         val test = "/mnt/e/"
-        val pathWin= "E:\\_Projects\\_Clan-Projects\\Mount&Blade Warband Dedicated\\Modules\\Native\\SceneObj"
+        val pathWin = "E:\\_Projects\\_Clan-Projects\\Mount&Blade Warband Napoleonic Wars Dedicated\\Modules\\Napoleonic Wars\\SceneObj"
 
-        return FileSystemUtil.getFilesForFolder(pathWin)
+//        return FileSystemUtil.getFilesForFolder(pathWin)
+        FileSystemUtil.saveFile()
+
+        return "OK"
+    }
+
+    @CrossOrigin
+    @PostMapping("/servers/gameServers/mb-warband/mapFiles", produces = ["application/json"])
+    fun funSaveWarbandMapFiles(@RequestParam("mapFiles") mapFiles: MultipartFile): String {
+        if (mapFiles.isEmpty) return "File is Empty"
+
+        var stream: BufferedOutputStream? = null
+        return try {
+            val bytes: ByteArray = mapFiles.bytes
+            val file:File=File("E:\\_Projects\\_Clan-Projects\\Mount&Blade Warband Napoleonic Wars Dedicated\\Modules\\Napoleonic Wars\\SceneObj\\${mapFiles.originalFilename}" )
+            stream = BufferedOutputStream(FileOutputStream(file))
+            stream.write(bytes)
+            "You successfully uploaded!"
+        } catch (e: Exception) {
+            e.printStackTrace()
+            "Failed to upload"
+        } finally {
+            stream?.close()
+        }
     }
 
     @GetMapping("/servers/gameServers/mb-bannerlord", produces = ["application/json"])

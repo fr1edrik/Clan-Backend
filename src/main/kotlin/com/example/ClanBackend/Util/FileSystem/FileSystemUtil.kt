@@ -1,6 +1,9 @@
 package com.example.ClanBackend.Util.FileSystem
 
+import java.io.File
+import java.io.FileWriter
 import java.io.IOException
+import java.lang.Exception
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -28,6 +31,19 @@ object FileSystemUtil {
             e.printStackTrace()
         }
         return result ?: emptyList<Map<String, String>>()
+    }
+    private val pathWin = "E:\\_Projects\\_Clan-Projects\\Mount&Blade Warband Napoleonic Wars Dedicated\\Modules\\Napoleonic Wars\\SceneObj"
+
+    fun saveFile(){
+        var fileWriter: FileWriter? = null
+        try {
+            fileWriter = FileWriter(File("$pathWin/test.txt"))
+            fileWriter.write("Hallo welt");
+        }catch (e:IOException){
+            e.printStackTrace();
+        }finally {
+            fileWriter?.close()
+        }
     }
 
     fun convertToKB(bytes: Long): String {

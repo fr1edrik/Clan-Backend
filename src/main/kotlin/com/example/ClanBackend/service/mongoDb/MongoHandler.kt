@@ -8,18 +8,19 @@ import org.bson.codecs.configuration.CodecRegistries.fromRegistries
 import org.bson.codecs.pojo.PojoCodecProvider
 
 object MongoHandler {
-    val pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+    private val pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),fromProviders(PojoCodecProvider.builder().automatic(true).build()));
     private val mongoClient =MongoClient("localhost", MongoClientOptions.builder().codecRegistry(pojoCodecRegistry).build());
-    private val database = mongoClient.getDatabase("example")
+    val database = mongoClient.getDatabase("example")
 
     fun getDataBase() {
         val collection = database.getCollection("myCollections")
         collection.insertOne(Document("schlüssel", 12345))
     }
 
-    fun insertInto(collectionName:String, values: List<ChatEntry>){
+    inline fun <reified T> insertInto(collectionName:String, values: List<T>){
         try {
-            val collection = database.getCollection(collectionName, ChatEntry::class.java)
+//            val collection = database.getCollection(collectionName, ChatEntry::class.java)
+            val collection = database.getCollection(collectionName, T::class.java)
 
             collection.insertMany(values)
         }catch (e:Exception){
