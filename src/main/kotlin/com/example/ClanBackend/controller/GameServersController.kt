@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.lang.Exception
 
 @RestController
@@ -17,9 +18,9 @@ class GameServersController {
     @GetMapping("/servers/gameServers", produces = ["application/json"])
     fun getGameList(): List<Map<String, String>> {
         val mockedServerList = listOf(
-                mapOf("serverName" to "Mount and Blade", "game" to "mountAndBlade"),
-                mapOf("serverName" to "Counter", "game" to "countersrike"),
-                mapOf("serverName" to "MineCr", "game" to "minecraft")
+                mapOf("serverName" to "Mount and Blade", "game" to "mountAndBlade")
+//                mapOf("serverName" to "Counter", "game" to "countersrike"),
+//                mapOf("serverName" to "MineCr", "game" to "minecraft")
         )
         return mockedServerList
     }
@@ -60,7 +61,7 @@ class GameServersController {
             stream = BufferedOutputStream(FileOutputStream(file))
             stream.write(bytes)
             "You successfully uploaded!"
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             e.printStackTrace()
             "Failed to upload"
         } finally {

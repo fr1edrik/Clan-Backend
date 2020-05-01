@@ -28,6 +28,8 @@ dependencies {
         exclude("org.slf4j", "slf4j-log4j12")
     }
     implementation("com.google.code.gson:gson:2.8.5")
+    implementation("org.springframework.boot", "spring-boot-starter-security")
+    implementation("io.jsonwebtoken", "jjwt", "0.9.1")
 }
 
 tasks.withType<Test> {
