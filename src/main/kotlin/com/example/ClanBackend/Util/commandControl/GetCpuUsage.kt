@@ -6,7 +6,7 @@ import java.io.InputStreamReader
 
 
 object GetCpuUsage : ICommand<String> {
-    override fun execute(): String{
+    override fun execute(args:List<String>): String{
         var result: String = ""
         var reader: BufferedReader? = null
 

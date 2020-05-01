@@ -6,4 +6,5 @@ import com.example.ClanBackend.model.metrics.Memory
 object CommandControl {
     val GetCpuUsage: ICommand<String> = com.example.ClanBackend.Util.commandControl.GetCpuUsage
     val GetMemUsage: ICommand<Memory> = com.example.ClanBackend.Util.commandControl.GetMemUsage
+    val StartHandleSinusbot: ICommand<Unit> = com.example.ClanBackend.Util.commandControl.StartHandleSinusbot
 }

@@ -6,7 +6,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 
 object GetMemUsage : ICommand<Memory> {
-    override fun execute(): Memory {
+    override fun execute(args: List<String>): Memory {
         var result: String = ""
 
         var reader: BufferedReader? = null
